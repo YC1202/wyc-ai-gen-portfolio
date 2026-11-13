@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>吴曜材 · AI 生图作品与质检档案</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#F5F6FA;
+  --surface:#FFFFFF;
+  --surface-2:#EDEFF4;
+  --ink:#171B23;
+  --ink-soft:#3A4150;
+  --muted:#6B7280;
+  --line:#DBDFE7;
+  --accent:#C9472F;
+  --accent-ink:#8C2E1E;
+  --accent-soft:#FBE7E1;
+  --good:#1F8F68;
+  --good-ink:#15694C;
+  --good-soft:#E1F3EA;
+  --font-display:'Source Serif 4',Georgia,'Noto Serif SC',serif;
+  --font-body:'IBM Plex Sans','Noto Sans SC',system-ui,sans-serif;
+  --font-mono:'IBM Plex Mono','Noto Sans SC',ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#10131A; --surface:#171B23; --surface-2:#1E232D;
+    --ink:#ECEEF3; --ink-soft:#C6CCD8; --muted:#8B93A4; --line:#2A3040;
+    --accent:#FF7A5C; --accent-ink:#FFC7B4; --accent-soft:#35231F;
+    --good:#3FC592; --good-ink:#9BEAC4; --good-soft:#143226;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#10131A; --surface:#171B23; --surface-2:#1E232D;
+  --ink:#ECEEF3; --ink-soft:#C6CCD8; --muted:#8B93A4; --line:#2A3040;
+  --accent:#FF7A5C; --accent-ink:#FFC7B4; --accent-soft:#35231F;
+  --good:#3FC592; --good-ink:#9BEAC4; --good-soft:#143226;
+}
+*{box-sizing:border-box;}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--font-body);
+  font-size:16px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  margin:0;
+}
+img{max-width:100%;display:block;}
+[hidden]{display:none!important;}
+.wrap{max-width:860px;margin:0 auto;padding:0 20px;}
+h1,h2,h3{font-family:var(--font-display);font-weight:700;text-wrap:balance;margin:0;}
+p{margin:0;}
+a{color:var(--accent-ink);text-decoration-thickness:1px;}
+::selection{background:var(--accent-soft);}
+.eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+.mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums;}
+.case-code{
+  font-family:var(--font-mono);font-size:12px;letter-spacing:.04em;
+  color:var(--accent-ink);background:var(--accent-soft);
+  padding:3px 8px;border-radius:3px;display:inline-block;
+}
+.band{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--surface);}
+.band.alt{background:var(--surface-2);}
+
+/* ---------- 顶栏 ---------- */
+header.top{padding-block:18px;border-bottom:1px solid var(--line);background:var(--surface);}
+.top-row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;}
+.brand{font-family:var(--font-mono);font-size:13px;letter-spacing:.03em;color:var(--ink-soft);}
+.brand b{color:var(--ink);}
+.contact{font-family:var(--font-mono);font-size:12.5px;color:var(--muted);}
+.contact a{color:var(--muted);}
+
+/* ---------- 首屏：10 秒读懂的摘要 ---------- */
+.hero{padding-block:44px 8px;}
+.hero h1{font-size:clamp(1.7rem,4.2vw,2.4rem);line-height:1.22;margin:10px 0 14px;}
+.hero .lede{color:var(--ink-soft);font-size:1.05rem;max-width:64ch;}
+.role-line{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;}
+.chip{
+  font-size:13px;border:1px solid var(--line);background:var(--surface);
+  border-radius:999px;padding:5px 13px;color:var(--ink-soft);
+}
+.chip b{color:var(--ink);}
+
+/* 三个数字 */
+.kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-top:26px;}
+.kpi > div{background:var(--surface);padding:18px 18px 20px;}
+.kpi .v{font-family:var(--font-mono);font-weight:700;font-size:1.45rem;color:var(--good-ink);letter-spacing:-.01em;}
+.kpi .v .was{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--accent);text-decoration-thickness:2px;font-weight:400;font-size:1rem;margin-right:4px;}
+.kpi .k{font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.5;}
+@media (max-width:640px){.kpi{grid-template-columns:1fr;}}
+
+/* 我能做什么：三栏 */
+.can{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px;}
+.can-card{border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:18px;}
+.can-card h3{font-family:var(--font-body);font-size:14.5px;font-weight:600;margin-bottom:8px;}
+.can-card p{font-size:13px;color:var(--ink-soft);line-height:1.6;}
+@media (max-width:700px){.can{grid-template-columns:1fr;}}
+
+/* ---------- 作品图廊 ---------- */
+.gallery{padding-block:46px 10px;}
+.gal-group{margin-top:26px;}
+.gal-group > h3{
+  font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--muted);font-weight:500;margin:0 0 12px;
+  padding-bottom:8px;border-bottom:1px solid var(--line);
+}
+.gal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+@media (max-width:720px){.gal-grid{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:440px){.gal-grid{grid-template-columns:1fr;}}
+.shot{
+  border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface);
+  display:flex;flex-direction:column;
+}
+.shot .ph{aspect-ratio:1/1;overflow:hidden;background:var(--surface-2);}
+.shot .ph img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease;}
+.shot:hover .ph img{transform:scale(1.035);}
+.shot .meta{padding:10px 12px 12px;}
+.shot .meta .t{font-size:12.5px;font-weight:600;color:var(--ink);line-height:1.45;}
+.shot .meta .d{font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.5;}
+.shot.tall .ph{aspect-ratio:3/4;}
+.shot.tall .ph img{object-fit:cover;}
+.note-strip{
+  margin-top:14px;font-size:12.5px;color:var(--muted);
+  border-left:3px solid var(--line);padding-left:12px;line-height:1.6;
+}
+
+/* ---------- 章节标题 ---------- */
+.sec-head{padding-top:52px;}
+.sec-head .eyebrow{margin-bottom:8px;}
+.sec-head h2{font-size:1.55rem;line-height:1.3;}
+
+/* ---------- 案宗 ---------- */
+.case{padding-block:44px 10px;}
+.case-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:8px;}
+.case h3{font-size:clamp(1.25rem,2.6vw,1.55rem);margin-top:8px;}
+.case .depth-tag{font-family:var(--font-mono);font-size:11px;color:var(--muted);margin-left:auto;}
+.case .lede{margin-top:8px;color:var(--ink-soft);font-size:14.5px;max-width:66ch;}
+.block-label{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-ink);margin:24px 0 8px;}
+.body-p{font-size:14px;color:var(--ink-soft);line-height:1.7;}
+
+/* 哑铃图 */
+.dumbbell{display:flex;flex-direction:column;gap:16px;margin-top:6px;}
+.db-row{display:grid;grid-template-columns:150px 1fr 58px;gap:10px;align-items:center;}
+.db-label{font-size:13px;color:var(--ink-soft);}
+.db-track{position:relative;height:10px;background:var(--surface-2);border-radius:5px;}
+.db-track .seg{position:absolute;top:3px;bottom:3px;background:var(--line);border-radius:2px;}
+.db-track .dot{position:absolute;top:50%;width:11px;height:11px;border-radius:50%;transform:translate(-50%,-50%);border:2px solid var(--surface);}
+.db-track .dot.before{background:var(--accent);}
+.db-track .dot.after{background:var(--good);}
+.db-val{font-family:var(--font-mono);font-size:12.5px;color:var(--good-ink);text-align:right;}
+.db-legend{display:flex;gap:18px;font-size:12px;color:var(--muted);margin-top:4px;}
+.db-legend span{display:inline-flex;align-items:center;gap:6px;}
+.db-legend i{width:9px;height:9px;border-radius:50%;display:inline-block;}
+.db-legend i.before{background:var(--accent);}
+.db-legend i.after{background:var(--good);}
+.chart-axis{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11px;color:var(--muted);margin-left:150px;margin-top:2px;}
+@media (max-width:560px){.db-row{grid-template-columns:1fr;gap:4px;}.db-val{text-align:left;}.chart-axis{margin-left:0;}}
+
+/* 数字方块 */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-top:16px;}
+.tile{background:var(--surface);padding:15px 16px 17px;}
+.tile .v{font-family:var(--font-mono);font-weight:700;font-size:1.3rem;color:var(--ink);}
+.tile .v.good{color:var(--good-ink);}
+.tile .k{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.5;}
+
+/* 缺陷条形 */
+.taxo{display:flex;flex-direction:column;gap:10px;margin-top:6px;}
+.tx-row{display:grid;grid-template-columns:150px 1fr 40px;gap:10px;align-items:center;}
+.tx-label{font-size:12.5px;color:var(--ink-soft);}
+.tx-bar-track{height:13px;background:var(--surface-2);border-radius:3px;overflow:hidden;}
+.tx-bar{height:100%;background:var(--accent-ink);border-radius:3px 0 0 3px;opacity:.85;}
+.tx-pct{font-family:var(--font-mono);font-size:12px;color:var(--muted);}
+@media (max-width:560px){.tx-row{grid-template-columns:1fr;gap:3px;}}
+
+/* 模型条 */
+.modelbars{display:flex;flex-direction:column;gap:12px;margin-top:8px;}
+.mb-row{display:grid;grid-template-columns:120px 1fr 60px;gap:10px;align-items:center;}
+.mb-name{font-family:var(--font-mono);font-size:12.5px;color:var(--ink-soft);}
+.mb-name.win{color:var(--good-ink);font-weight:600;}
+.mb-track{height:15px;background:var(--surface-2);border-radius:3px;overflow:hidden;}
+.mb-bar{height:100%;background:var(--muted);border-radius:3px 0 0 3px;}
+.mb-bar.win{background:var(--good);}
+.mb-val{font-family:var(--font-mono);font-size:12.5px;}
+.mb-val.win{color:var(--good-ink);font-weight:600;}
+@media (max-width:560px){.mb-row{grid-template-columns:1fr;gap:3px;}}
+
+/* 时间线 */
+.timeline{display:flex;flex-direction:column;margin-top:6px;}
+.tl-node{display:grid;grid-template-columns:62px 16px 1fr;gap:4px;padding:9px 0;}
+.tl-node:not(:last-child){border-bottom:1px dashed var(--line);}
+.tl-ver{font-family:var(--font-mono);font-size:12px;color:var(--accent-ink);font-weight:600;padding-top:2px;}
+.tl-dot-col{display:flex;justify-content:center;}
+.tl-dot-col i{width:7px;height:7px;border-radius:50%;background:var(--ink-soft);margin-top:7px;}
+.tl-body{font-size:13px;color:var(--ink-soft);line-height:1.6;}
+.tl-body b{color:var(--ink);}
+
+/* callout */
+.callout{
+  border:1px solid var(--line);border-left:3px solid var(--accent);
+  background:var(--surface);border-radius:4px;padding:13px 16px;
+  margin-top:12px;font-size:13px;color:var(--ink-soft);line-height:1.65;
+}
+.callout .ctag{font-family:var(--font-mono);font-size:10.5px;color:var(--accent-ink);display:block;margin-bottom:5px;letter-spacing:.04em;}
+.callout b{color:var(--ink);}
+.callout.good{border-left-color:var(--good);}
+.callout.good .ctag{color:var(--good-ink);}
+
+/* 标签 */
+.skill-group{margin-top:20px;}
+.skill-group h3{font-family:var(--font-mono);font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:9px;}
+.tag-row{display:flex;gap:7px;flex-wrap:wrap;}
+.tag{font-size:12px;border:1px solid var(--line);border-radius:4px;padding:4px 9px;color:var(--ink-soft);background:var(--surface);}
+
+/* 折叠细节 */
+details.deep{margin-top:16px;border:1px solid var(--line);border-radius:8px;background:var(--surface);overflow:hidden;}
+details.deep > summary{
+  cursor:pointer;padding:13px 16px;font-size:13px;font-weight:600;color:var(--ink-soft);
+  list-style:none;display:flex;align-items:center;gap:8px;
+}
+details.deep > summary::-webkit-details-marker{display:none;}
+details.deep > summary::before{content:"＋";font-family:var(--font-mono);color:var(--accent-ink);}
+details.deep[open] > summary::before{content:"－";}
+details.deep > summary:hover{background:var(--surface-2);}
+details.deep .inner{padding:2px 16px 18px;}
+
+/* 反思 */
+.notes{display:flex;flex-direction:column;gap:14px;margin-top:14px;}
+.note{display:grid;grid-template-columns:24px 1fr;gap:10px;}
+.note .n{font-family:var(--font-mono);font-size:11.5px;color:var(--muted);padding-top:2px;}
+.note p{font-size:13.5px;color:var(--ink-soft);line-height:1.65;}
+.note b{color:var(--ink);}
+
+/* 联系 / 尾部 */
+.cta{
+  margin-top:46px;border:1px solid var(--line);border-radius:10px;
+  background:var(--surface);padding:24px;text-align:center;
+}
+.cta h2{font-size:1.3rem;margin-bottom:8px;}
+.cta p{font-size:13.5px;color:var(--ink-soft);max-width:56ch;margin:0 auto;line-height:1.7;}
+.cta .links{margin-top:14px;font-family:var(--font-mono);font-size:13px;display:flex;gap:18px;justify-content:center;flex-wrap:wrap;}
+footer{padding-block:34px;text-align:center;}
+footer .mono{color:var(--muted);font-size:11.5px;line-height:1.8;}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-row">
+    <div class="brand"><b>吴曜材</b> · AI 生图 / 质量与合规</div>
+    <div class="contact">yaocai@126.com</div>
+  </div>
+</header>
+
+<!-- ============ 10 秒摘要 ============ -->
+<div class="hero wrap">
+  <p class="eyebrow">AI 生图 · 作品与质检档案</p>
+  <h1>能出图，也能说清"为什么这张图能过审"</h1>
+  <p class="lede">
+    上段实习在某跨境 AI 视觉平台负责<b>生图质量与 Prompt 体系</b>：建立评测标准、定位系统性缺陷、
+    重构提示词架构，并把每一次结论落到可复查的数字与留痕上。
+    下面先放作品，再放方法与案例。
+  </p>
+
+  <div class="role-line">
+    <span class="chip"><b>会</b> 服装 / 首饰 / 家居 / 卖点图多品类出图</span>
+    <span class="chip"><b>会</b> 提示词分层与版本管理</span>
+    <span class="chip"><b>会</b> 质量评分与合规留痕</span>
+    <span class="chip"><b>可补</b> 美妆个护 / 保健品品类 demo</span>
+  </div>
+
+  <div class="kpi">
+    <div>
+      <div class="v"><span class="was">28.9%</span>0%</div>
+      <div class="k">人种偏移率 · 388 个样本全量复测</div>
+    </div>
+    <div>
+      <div class="v">97.95%</div>
+      <div class="k">首饰品类全量通过率 · 81 case / 390 张</div>
+    </div>
+    <div>
+      <div class="v">20.9%</div>
+      <div class="k">卖点图留白达标率 · 原 1.1%~11.2%</div>
+    </div>
+  </div>
+
+  <div class="can">
+    <div class="can-card">
+      <h3>① 出图</h3>
+      <p>多品类、多场景、多比例批量出图；同款商品能出整套图，不是单张碰运气。</p>
+    </div>
+    <div class="can-card">
+      <h3>② 定标准</h3>
+      <p>把"好不好看"拆成可打分的维度（受众 / 商品保真 / 画面质量），能用同一把尺子复评。</p>
+    </div>
+    <div class="can-card">
+      <h3>③ 能留痕</h3>
+      <p>提示词与版本号全程记录，问题图建台账、可追溯可排除——对应合规审核与授权台账的要求。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 作品图廊 ============ -->
+<div class="band">
+<div class="wrap gallery">
+  <div class="sec-head">
+    <p class="eyebrow">作品</p>
+    <h2>八个方向的产出</h2>
+  </div>
+  <p class="body-p" style="margin-top:10px;">
+    覆盖家居布艺、服饰、首饰、静物与营销排版。品类以服饰与首饰为主，
+    其中首饰与静物的微距、高光、肤感控制可直接迁移到美妆个护与保健品的质感表达。
+  </p>
+
+  <div class="gal-group">
+    <h3>家居 · 生活场景</h3>
+    <div class="gal-grid">
+      <div class="shot">
+        <div class="ph"><img src="portfolio-assets/01-home-sofa-living.jpg" alt="家居场景：客厅组合沙发" loading="lazy"></div>
+        <div class="meta">
+          <div class="t">客厅大场景 · 家具展示</div>
+          <div class="d">自然窗光 + 浅景深；产品落位、环境叙事</div>
+        </div>
+      </div>
+      <div class="shot">
+        <div class="ph"><img src="portfolio-assets/02-home-mahjong-lifestyle.jpg" alt="家居场景：麻将垫使用中" loading="lazy"></div>
+        <div class="meta">
+          <div class="t">使用中场景 · 布艺产品</div>
+          <div class="d">带人入镜的使用态；桌面材质与织物纹理</div>
+        </div>
+      </div>
+      <div class="shot">
+        <div class="ph"><img src="portfolio-assets/03-stilllife-gold-coin.jpg" alt="静物：金属纪念币" loading="lazy"></div>
+        <div class="meta">
+          <div class="t">静物暗调 · 金属高光</div>
+          <div class="d">单光源造型、金属反射与投影控制</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gal-group">
+    <h3>服饰 · 商品与细节</h3>
+    <div class="gal-grid">
+      <div class="shot">
+        <div class="ph"><img src="portfolio-assets/04-apparel-shorts-flatlay.jpg" alt="服饰平铺：短裤" loading="lazy"></div>
+        <div class="meta">
+          <div class="t">平铺白底 · 服装主图</div>
+          <div class="d">版型与印花还原；适合平台主图规范</div>
+        </div>
+      </div>
+      <div class="shot tall">
+        <div class="ph"><img src="portfolio-assets/07-apparel-detail-fold.jpg" alt="服饰细节：褶皱面料" loading="lazy"></div>
+        <div class="meta">
+          <div class="t">面料细节 · 质感特写</div>
+          <div class="d">褶皱、光泽、边缘工艺；细节图可用于详情页</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gal-group">
+    <h3>首饰 · 佩戴与微距</h3>
+    <div class="gal-grid">
+      <div class="shot">
+        <div class="ph"><img src="portfolio-assets/05-jewelry-pearl-earring-macro.jpg" alt="首饰：珍珠耳钉佩戴特写" loading="lazy"></div>
+        <div class="meta">
+          <div class="t">佩戴微距 · 珍珠耳饰</div>
+          <div class="d">耳部结构、肤感与珠光高光；最接近美妆个护的特写语言</div>
+        </div>
+      </div>
+      <div class="shot">
+        <div class="ph"><img src="portfolio-assets/06-jewelry-ring-marble.jpg" alt="首饰：开口戒指白底" loading="lazy"></div>
+        <div class="meta">
+          <div class="t">白底产品图 · 金属与陶瓷</div>
+          <div class="d">结构朝向、件数与开口位置保真</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gal-group">
+    <h3>营销排版 · 卖点图</h3>
+    <div class="gal-grid">
+      <div class="shot">
+        <div class="ph"><img src="portfolio-assets/08-sellingpoint-text-layout.jpg" alt="卖点图：带文字版式" loading="lazy"></div>
+        <div class="meta">
+          <div class="t">卖点图 · 版式与信息层级</div>
+          <div class="d">留白分区、标题层级、文案可读性；可拆成无文字底图供后期填字</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="note-strip">
+    说明：以上为能力方向示意，非全部商业交付；商业项目图因保密未全部公开，可在面试时按要求展示。
+    美妆个护 / 保健品品类我目前没有商业作品，可按贵司品牌调性在一周内补 3–5 张图 + 1 条图生视频 demo。
+  </p>
+</div>
+</div>
+
+<!-- ============ 四个案宗 ============ -->
+<div class="wrap">
+  <div class="sec-head">
+    <p class="eyebrow">方法与案例</p>
+    <h2>四份案宗：问题怎么被找到、被量化、被修好</h2>
+  </div>
+  <p class="body-p" style="margin-top:10px;">
+    这部分是"图为什么能稳定"的证明。每份案宗只保留结论与关键数字，过程记录可另行提供。
+  </p>
+</div>
+
+<!-- 案宗 01 -->
+<div class="band">
+<div class="wrap case">
+  <div class="case-head">
+    <span class="case-code">案宗 01 · AUDIENCE</span>
+    <span class="depth-tag">深度展开</span>
+  </div>
+  <h3>服装套图"受众对齐"：从人种偏移失控到全量达标</h3>
+  <p class="lede">
+    客户要北美白人模特，系统却大量产出东亚面孔，广告素材在欧美市场直接用不了。
+  </p>
+
+  <div class="block-label">根因</div>
+  <p class="body-p">
+    交叉比对期望人种与实际生成结果，388 个样本中 112 例偏移（28.9%），其中"白人→东亚"占 72%。
+    下钻后锁定：提示词注入环节<b>只传了中文商品描述，没有传目标市场与人种字段</b>——
+    模型看到中文商品名就推断东亚市场。是链路缺陷，不是模型不可控。
+  </p>
+
+  <div class="block-label">修复前 → 后</div>
+  <div class="dumbbell">
+    <div class="db-row">
+      <span class="db-label">人种偏移率（全量）</span>
+      <div class="db-track"><div class="seg" style="left:0%;width:28.9%;"></div>
+        <div class="dot before" style="left:28.9%;"></div><div class="dot after" style="left:0%;"></div></div>
+      <span class="db-val">28.9→0</span>
+    </div>
+    <div class="db-row">
+      <span class="db-label">重度失败率（零分）</span>
+      <div class="db-track"><div class="seg" style="left:0%;width:51.2%;"></div>
+        <div class="dot before" style="left:51.2%;"></div><div class="dot after" style="left:0%;"></div></div>
+      <span class="db-val">51.2→0</span>
+    </div>
+    <div class="db-row">
+      <span class="db-label">单 case 偏移率</span>
+      <div class="db-track"><div class="seg" style="left:3.4%;width:11.6%;"></div>
+        <div class="dot before" style="left:15%;"></div><div class="dot after" style="left:3.4%;"></div></div>
+      <span class="db-val">15→3.4</span>
+    </div>
+  </div>
+  <div class="chart-axis"><span>0%</span><span>50%</span></div>
+  <div class="db-legend"><span><i class="before"></i>修复前</span><span><i class="after"></i>修复后</span></div>
+
+  <div class="tiles">
+    <div class="tile"><div class="v good">8.09</div><div class="k">方案均分（原 3.71）</div></div>
+    <div class="tile"><div class="v good">83.0%</div><div class="k">高分率（原 46.7%）</div></div>
+    <div class="tile"><div class="v good">100%</div><div class="k">裁切预处理成功率（原 60%）</div></div>
+    <div class="tile"><div class="v">p=0.0128</div><div class="k">统计检验：裁切显著降低偏移</div></div>
+  </div>
+
+  <details class="deep">
+    <summary>展开：两条反直觉结论（面试可讲，约 1 分钟）</summary>
+    <div class="inner">
+      <div class="callout">
+        <span class="ctag">发现 1</span>
+        加权重解决不了偏移，反而更糟。用 <code class="mono" style="font-size:12px;">(East Asian:1.5)</code>
+        这类加权"锁定错误答案"，偏移率反升到 <b>33.8%</b>（三版最高）。根因在输入链路，不在模型。
+      </div>
+      <div class="callout">
+        <span class="ctag">发现 2</span>
+        负面词堆太多会让模型"过度保守"。量化出正/负面词数比（v1/v2/v3 = 0.30/0.91/0.65），
+        比值到 0.91 时模型直接照抄参考图不再生成——据此定下 <b>"负正比 ≤0.6"</b> 的工程阈值。
+      </div>
+    </div>
+  </details>
+</div>
+</div>
+
+<!-- 案宗 02 -->
+<div class="wrap case">
+  <div class="case-head">
+    <span class="case-code">案宗 02 · JEWELRY</span>
+    <span class="depth-tag">中度展开</span>
+  </div>
+  <h3>首饰品类提示词体系：v4.0 → v4.4</h3>
+  <p class="lede">
+    首饰小、精、结构敏感，通用电商提示词对它毫无约束。81 case × 2 张基线批测，人工核查出 11 个典型失败案例、6 类缺陷。
+  </p>
+
+  <div class="block-label">缺陷类型占比</div>
+  <div class="taxo">
+    <div class="tx-row"><span class="tx-label">A 佩戴物理逻辑错误</span><div class="tx-bar-track"><div class="tx-bar" style="width:45%;"></div></div><span class="tx-pct">45%</span></div>
+    <div class="tx-row"><span class="tx-label">C 尺度 / 比例错误</span><div class="tx-bar-track"><div class="tx-bar" style="width:18%;"></div></div><span class="tx-pct">18%</span></div>
+    <div class="tx-row"><span class="tx-label">F 细节保真不足</span><div class="tx-bar-track"><div class="tx-bar" style="width:10%;"></div></div><span class="tx-pct">10%</span></div>
+    <div class="tx-row"><span class="tx-label">B 品类识别错误</span><div class="tx-bar-track"><div class="tx-bar" style="width:9%;"></div></div><span class="tx-pct">9%</span></div>
+    <div class="tx-row"><span class="tx-label">D 视觉焦点错误</span><div class="tx-bar-track"><div class="tx-bar" style="width:9%;"></div></div><span class="tx-pct">9%</span></div>
+    <div class="tx-row"><span class="tx-label">E 场景污染</span><div class="tx-bar-track"><div class="tx-bar" style="width:9%;"></div></div><span class="tx-pct">9%</span></div>
+  </div>
+
+  <div class="block-label">架构版本演进</div>
+  <div class="timeline">
+    <div class="tl-node"><span class="tl-ver">v4.0</span><span class="tl-dot-col"><i></i></span>
+      <span class="tl-body">通用提示词直连基线，<b>81 case × 2 张</b>。</span></div>
+    <div class="tl-node"><span class="tl-ver">v4.1</span><span class="tl-dot-col"><i></i></span>
+      <span class="tl-body">六类专项：佩戴物理约束、子品类→佩戴部位映射、参考图结构蓝图、镂空/浮雕区分、单手单腕原则、卖点聚焦。</span></div>
+    <div class="tl-node"><span class="tl-ver">v4.2</span><span class="tl-dot-col"><i></i></span>
+      <span class="tl-body">两份修复方案（手部解剖安全姿态、异形戒指拓扑锁）并入下一版。</span></div>
+    <div class="tl-node"><span class="tl-ver">v4.3</span><span class="tl-dot-col"><i></i></span>
+      <span class="tl-body">规则从 79 行扩到 <b>295 行</b>，新增系统级"参考图解读防线"。</span></div>
+    <div class="tl-node"><span class="tl-ver">v4.4</span><span class="tl-dot-col"><i></i></span>
+      <span class="tl-body">新增"局部执行保护"模块，把全局约束升级为逐部位约束（实测 384 行）。</span></div>
+  </div>
+
+  <div class="callout">
+    <span class="ctag">方法论</span>
+    堆 <code class="mono" style="font-size:12px;">no extra hands / no floating limbs</code> 反而会诱发多余手臂。
+    改用摄影语料（<code class="mono" style="font-size:12px;">subject isolation + shallow depth of field</code>）替代负面词堆砌，
+    并建立"6 种安全姿态模板"把开放式的解剖推断降级为"从安全构图库里选一个"。
+  </div>
+
+  <div class="tiles">
+    <div class="tile"><div class="v good">97.95%</div><div class="k">全量通过率（81 case / 390 张）</div></div>
+    <div class="tile"><div class="v good">0%</div><div class="k">自有服务端错误率（对照平台 40%）</div></div>
+    <div class="tile"><div class="v">10/11</div><div class="k">历史系统性问题彻底修复</div></div>
+    <div class="tile"><div class="v">~85%</div><div class="k">纯提示词控制的良品率上限（主动标注）</div></div>
+  </div>
+</div>
+
+<!-- 案宗 03 -->
+<div class="band">
+<div class="wrap case">
+  <div class="case-head">
+    <span class="case-code">案宗 03 · MULTIMODEL</span>
+    <span class="depth-tag">中度展开</span>
+  </div>
+  <h3>服装多渠道模型横评与提示词架构重构</h3>
+  <p class="lede">
+    要在多个生图模型里选定"模特 + 场景同时参考"的生产链路，但各家表现差异极大、没有统一口径。
+  </p>
+
+  <div class="block-label">同时参考模式完全通过率（40 case / 120 张 × 3 模型）</div>
+  <div class="modelbars">
+    <div class="mb-row"><span class="mb-name win">Nano Pro</span>
+      <div class="mb-track"><div class="mb-bar win" style="width:97.5%;"></div></div><span class="mb-val win">97.5%</span></div>
+    <div class="mb-row"><span class="mb-name">自研模型</span>
+      <div class="mb-track"><div class="mb-bar" style="width:42.5%;"></div></div><span class="mb-val">42.5%</span></div>
+    <div class="mb-row"><span class="mb-name">万象 Wan2.7</span>
+      <div class="mb-track"><div class="mb-bar" style="width:17.5%;"></div></div><span class="mb-val">17.5%</span></div>
+  </div>
+
+  <div class="tiles">
+    <div class="tile"><div class="v good">0%</div><div class="k">GPT-image-2 场景污染率（原 32.5%）</div></div>
+    <div class="tile"><div class="v good">0.83%</div><div class="k">Nano Pro 场景通道缺陷率（原 5.0%）</div></div>
+    <div class="tile"><div class="v">↓90%</div><div class="k">隔离实验后背景替换失败率（24.2%→2.5%）</div></div>
+  </div>
+
+  <details class="deep">
+    <summary>展开：隔离实验与一条被否定的假设</summary>
+    <div class="inner">
+      <div class="callout">
+        <span class="ctag">隔离实验</span>
+        万象在同时参考模式下 70% 场景替换失效。单变量实验验证两条假设：
+        上传顺序（场景→模特→商品）是主因（背景替换成功率相差 <b>10 倍</b>）；
+        提示词里"倒数第 n 张"这种相对表达是次要因素，改绝对描述可再降缺陷率 <b>约 11 个百分点</b>——零成本就能落地。
+        据此建议：万象退出同时参考模式评估，GPT-image-2 切新架构，Nano Pro 作为首选。
+      </div>
+      <div class="callout">
+        <span class="ctag">一条被数据否定的假设</span>
+        业务方原以为"给模型输入 AI 解析的商品信息就能提升质量"。A/B 对照后否定：
+        输入组 vs 未输入组问题率 10.0% vs 8.75%（无显著差异），万象组反而更差（41.3% vs 37.5%）。
+      </div>
+    </div>
+  </details>
+</div>
+</div>
+
+<!-- 案宗 04 -->
+<div class="wrap case">
+  <div class="case-head">
+    <span class="case-code">案宗 04 · SELLINGPOINT</span>
+    <span class="depth-tag">概览</span>
+  </div>
+  <h3>卖点图"无文字可编辑模板"生成架构</h3>
+  <p class="lede">
+    客户要的是不带文字、但保留版式骨架与留白的底图，供后期多语言填字。
+    这条线最难：去掉文字后模型失去留白动机，暴露出 9 类系统性问题，6 轮迭代一度不收敛。
+  </p>
+  <p class="body-p" style="margin-top:10px;">
+    转折点是停止试错，转去拆"有文字版为什么成功"——文字触发了模型"干净底板"的训练先验。
+    最终融合成<b>结构锚点 + 注意力锚点 + 物理合理化</b>三管齐下的方案。
+  </p>
+
+  <div class="tiles">
+    <div class="tile"><div class="v">4 → 12</div><div class="k">版式原型数（v1.0.3 → v5.0.0）</div></div>
+    <div class="tile"><div class="v good">20.9%</div><div class="k">网格版式留白占比（原 1.1%~11.2%）</div></div>
+    <div class="tile"><div class="v good">22.3%</div><div class="k">分栏版式留白占比（原 16.2%）</div></div>
+    <div class="tile"><div class="v good">29/29</div><div class="k">全量批测 0 失败（113 张）</div></div>
+  </div>
+</div>
+
+<!-- ============ 能力与合规 ============ -->
+<div class="band alt">
+<div class="wrap" style="padding-block:44px 12px;">
+  <p class="eyebrow">能力</p>
+  <h2 style="font-size:1.45rem;margin-top:8px;">我的能力清单</h2>
+
+  <div class="skill-group">
+    <h3>出图 · 提示词</h3>
+    <div class="tag-row">
+      <span class="tag">多品类出图（服饰 / 首饰 / 家居 / 卖点图）</span>
+      <span class="tag">分层提示词架构</span>
+      <span class="tag">正面 / 负面约束配比</span>
+      <span class="tag">结构与物理锚点</span>
+      <span class="tag">多图输入角色绑定</span>
+    </div>
+  </div>
+  <div class="skill-group">
+    <h3>质量 · 合规 · 留痕</h3>
+    <div class="tag-row">
+      <span class="tag">敏感词清洗规则库（45 条）</span>
+      <span class="tag">平台安全拦截归因</span>
+      <span class="tag">提示词 / 版本号全程留痕</span>
+      <span class="tag">问题图台账与永久排除</span>
+      <span class="tag">多渠道内容规范适配</span>
+    </div>
+  </div>
+  <div class="skill-group">
+    <h3>数据复盘</h3>
+    <div class="tag-row">
+      <span class="tag">加权评分体系</span>
+      <span class="tag">A/B 与单变量实验</span>
+      <span class="tag">缺陷分类与归因</span>
+      <span class="tag">测试集构建（18→137 条）</span>
+    </div>
+  </div>
+  <div class="skill-group">
+    <h3>工具</h3>
+    <div class="tag-row">
+      <span class="tag">Gemini / Nano Pro</span>
+      <span class="tag">GPT-image-2</span>
+      <span class="tag">通义万相（评测与批测）</span>
+      <span class="tag">自研模型</span>
+      <span class="tag">Python · Pandas · PIL</span>
+      <span class="tag">Chrome DevTools 自动化</span>
+      <span class="tag">Git</span>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============ 反思 ============ -->
+<div class="wrap" style="padding-block:44px 6px;">
+  <p class="eyebrow">反思</p>
+  <h2 style="font-size:1.45rem;margin-top:8px;">三个思维转变</h2>
+  <div class="notes">
+    <div class="note"><span class="n">01</span>
+      <p><b>从"做出来"到"讲清楚"。</b>最早的对比报告只堆数据，被反馈"缺少机理解释"；
+      后来固定用"数据 + 机理 + 业务建议"三段式，并按受众裁剪信息。</p></div>
+    <div class="note"><span class="n">02</span>
+      <p><b>从"调参试错"到"假设验证"。</b>版式问题前 6 轮反复改提示词都不成，
+      转折点是停下来拆"为什么另一个版本能成"，并引入系统性调研——边际收益趋零时该换方法，不是加投入。</p></div>
+    <div class="note"><span class="n">03</span>
+      <p><b>从"完成任务"到"对结论负责"。</b>主动标注统计局限、承认实验设计缺陷、
+      用数据否定业务方的乐观假设、承认模型能力上限——这些"对自己不利"的信息反而让汇报更可信。</p></div>
+  </div>
+</div>
+
+<!-- ============ CTA ============ -->
+<div class="wrap">
+  <div class="cta">
+    <h2>如果合适，我想补上你们最缺的那一块</h2>
+    <p>
+      我目前没有美妆个护 / 保健品的商业作品，但首饰与静物的微距、高光、肤感控制是同一套能力。
+      给我一个品类和品牌调性，我可以在一周内交出 3–5 张图 + 1 条图生视频 demo，按你们的标准验收。
+    </p>
+    <div class="links">
+      <span>yaocai@126.com</span>
+    </div>
+  </div>
+</div>
+
+<footer class="wrap">
+  <p class="mono">
+    吴曜材 · AI 生图作品与质检档案<br>
+    业务方名称已匿名处理；量化指标均为测试集口径，可在原始报告中逐一溯源。
+  </p>
+</footer>
+
+</body>
+</html>
